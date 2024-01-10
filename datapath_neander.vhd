@@ -4,23 +4,27 @@ USE IEEE.STD_LOGIC_ARITH.ALL;
 USE IEEE.STD_LOGIC_UNSIGNED.ALL;
 
 entity datapath_neander is
-    Port(
-        clk, reset: in std_logic;
-        cargaacc, incPC, cargaPC, cargaREM, sel, cargaRI, cargaNZ: in std_logic;
-        selULA: in std_logic_vector (2 downto 0);
-        dado_saida_mem: in std_logic_vector (7 downto 0);
-
-        end_rem, dado_acumulador: out std_logic_vector (7 downto 0);
-        instrucao: out std_logic_vector (7 downto 0);
-        n_flag, z_flag: out std_logic;
-
-    );
+    Port ( clk : in STD_LOGIC;
+           reset : in STD_LOGIC;
+           cargaacc : in STD_LOGIC;
+           incPC : in STD_LOGIC;
+           cargaPC : in STD_LOGIC;
+           cargaREM : in STD_LOGIC;
+           sel : in STD_LOGIC;
+           cargaRI : in STD_LOGIC;
+           cargaNZ : in STD_LOGIC;
+           selULA : in STD_LOGIC_VECTOR (2 downto 0);
+           dado_saida_mem : in STD_LOGIC_VECTOR (7 downto 0);
+           end_rem : out STD_LOGIC_VECTOR (7 downto 0);
+           dado_acumulador : out STD_LOGIC_VECTOR (7 downto 0);
+           instrucao : out STD_LOGIC_VECTOR (7 downto 0);
+           n_flag : out STD_LOGIC;
+           z_flag : out STD_LOGIC);
 end datapath_neander;
 
 architecture Behavioral of datapath_neander is
 
-    signal acumulador, pc, registrador_mem, reg_instrucao
-           ula: std_logic_vector (7 downto 0);
+    signal acumulador, pc, registrador_mem, reg_instrucao, ula: std_logic_vector (7 downto 0);
 
     -- O mux não precisa porque eu posso selecionar direto (lembra disso, não sei descrever)
 begin
@@ -33,8 +37,8 @@ begin
                 -- Trecho de implementação do PC
                 if (cargaPC = '1') then
                     pc <= dado_saida_mem;
-                else if (incPC = '1') then
-                    pc <= pc + 1;
+                elsif (incPC = '1') then
+                    pc <= pc + '1';
                 end if;
 
                 -- Implementação acumulador
@@ -51,7 +55,7 @@ begin
                     when "010" =>
                         ula <= acumulador or dado_saida_mem;
                     when "011" =>
-                        ula <= not X;
+                        ula <= not acumulador;
                     when "100" =>
                         ula <= dado_saida_mem;
                     end case;
@@ -87,7 +91,7 @@ begin
         end if;
     end process;
 
-    end_rem <= registrador_rem;
+    end_rem <= registrador_mem;
     dado_acumulador <= acumulador;
     instrucao <= reg_instrucao;
 
